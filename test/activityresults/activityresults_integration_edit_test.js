@@ -20,7 +20,7 @@ describe('/activityresults/:result/photo/:photo', function () {
   var photoId = 'photo_id';
   beforeEach(function () {
     sinon.stub(activityresultsService, 'getActivityResultByName', function (activityResultName, callback) {
-      callback(null, new ActivityResult({ id: "foo", name: "foobar", created_by: 1, photos: [{id: photoId, title: 'mishka', uploaded_by: 1}]}));
+      callback(null, new ActivityResult({ id: "foo", name: "foobar", created_by: 1, tags: [], photos: [{id: photoId, title: 'mishka', uploaded_by: 1}]}));
     });
     sinon.stub(activityresultsService, 'addPhotoToActivityResult', function (activityResultName, photo, callback) {
       callback();
