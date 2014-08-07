@@ -56,7 +56,7 @@ describe('/activityresults/:result/upload', function () {
       //noinspection JSLint
       request(createApp(1))
         .post('/foo/upload')
-        .send({photo: dataURL})
+        .send({photo: dataURL, "hallo": "welt"})
         .expect(303)
         .expect('Location', /\/foo\/photo\/[\w+|\-]+\/edit/)
         .end(done);
