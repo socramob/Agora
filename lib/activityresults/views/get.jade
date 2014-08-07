@@ -97,6 +97,66 @@ block content
                       +thumbnailInfos(img)
 
   script(type='text/javascript').
+    function resizeImageFromFile(file, MAX_WIDTH, MAX_HEIGHT, callback) {
+          // Load via FileReader
+          var fr = new FileReader();
+          fr.onload = function(e) {
+            getDimensions(e.target.result, function(width, height, img) {
+            var newWidth = width;
+            var newHeight = height;
+            var aspectRatio = width/height;
+            // Image is wider than tall
+            if(width > MAX_WIDTH && aspectRatio >= 1) {
+            newWidth = MAX_WIDTH;
+            newHeight = MAX_WIDTH / aspectRatio
+            } else if(height > MAX_HEIGHT && aspectRatio <= 1) {
+            newWidth = MAX_HEIGHT * aspectRatio;
+            newHeight = MAX_HEIGHT;
+            }
+            resizeImage(img, newWidth, newHeight, function (canvas) {
+              callback(canvas.toDataURL('image/jpeg', 0.8));
+              })
+            });
+          }
+          fr.readAsDataURL(file);
+          function resizeImage(imgElement, width, height, callback) {
+            var cvs = document.createElement("canvas");
+            cvs.width = width;
+            cvs.height = height;
+            var ctx = cvs.getContext('2d');
+            ctx.drawImage(imgElement, 0, 0, width, height);
+            callback(cvs);
+          }
+          function getDimensions(imgData, callback) {
+            var tmpImg = document.createElement("img");
+            tmpImg.onload = function () {
+              callback(tmpImg.width, tmpImg.height, tmpImg);
+            }
+            tmpImg.src = imgData;
+          }
+        }
+
+        $(function() {
+          var $recordForm = $('#recordForm');
+          $recordForm.on('submit', function (e) {
+            var files = $('#input-file')[0].files;
+            if(!files || !files[0]) {
+              return;
+            }
+            resizeImageFromFile(files[0], 2560, 2560, function (dataURL) {
+              $.post($recordForm.attr('action'), {
+                photo: dataURL
+              }).success(function (data) {
+                window.location.href = data;
+              }).error(function (error) {
+                alert(error);
+              });
+            })
+            e.preventDefault();
+          });
+        });
+
+  script(type='text/javascript').
     var ESC_KEY = 27;
     jQuery(function() {
 
