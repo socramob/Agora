@@ -65,12 +65,12 @@
     "soap-sympa": "0.0.1",
     "static-favicon": "1.0.2",
     "stripe": "2.8.0",
-    "tmp": "0.0.24"
+    "tmp": "0.0.24",
     "underscore.string": "2.3.3",
     "URIjs": "1.13.2",
     "useragent": "2.0.9",
     "winston": "0.7.3",
-    "winston-config": "0.4.2",
+    "winston-config": "0.4.2"
   },
   "devDependencies": {
     "grunt": "0.4.5",
