@@ -174,7 +174,8 @@
     "done": "Done",
     "photoTitlePlaceholder": "What's on this photo?",
     "record_image": "Record",
-    "submit": "SUBMIT"
+    "submit": "SUBMIT",
+    "resize_on_client": "Resize image on client"
   },
   "payment": {
     "title": "Payment",

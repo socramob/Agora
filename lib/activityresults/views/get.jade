@@ -46,9 +46,11 @@ block content
           div
             button(type="submit").btn.btn-success.pull-right= t('activityresults.submit')
             span#btn-cancel.btn.btn-warning= t('activityresults.cancel')
+            input#resizeOnClient(type='checkbox',name='resizeOnClient',checked='checked')
+            label(for='resizeOnClient')= t('activityresults.resize_on_client')
 
 
-      script.
+  script.
         function getPreview(files, callback) {
           if(!files || !files[0])
             return null;
@@ -95,6 +97,70 @@ block content
                     img.thumb(src=img.uri + '?size=thumb', alt=img.title, title=img.title)
                     span.small(style="color: black")
                       +thumbnailInfos(img)
+
+  script(type='text/javascript').
+    function resizeImageFromFile(file, MAX_WIDTH, MAX_HEIGHT, callback) {
+          // Load via FileReader
+          var fr = new FileReader();
+          fr.onload = function(e) {
+            getDimensions(e.target.result, function(width, height, img) {
+            var newWidth = width;
+            var newHeight = height;
+            var aspectRatio = width/height;
+            // Image is wider than tall
+            if(width > MAX_WIDTH && aspectRatio >= 1) {
+            newWidth = MAX_WIDTH;
+            newHeight = MAX_WIDTH / aspectRatio
+            } else if(height > MAX_HEIGHT && aspectRatio <= 1) {
+            newWidth = MAX_HEIGHT * aspectRatio;
+            newHeight = MAX_HEIGHT;
+            }
+            resizeImage(img, newWidth, newHeight, function (canvas) {
+              callback(canvas.toDataURL('image/jpeg', 0.8));
+              })
+            });
+          }
+          fr.readAsDataURL(file);
+          function resizeImage(imgElement, width, height, callback) {
+            var cvs = document.createElement("canvas");
+            cvs.width = width;
+            cvs.height = height;
+            var ctx = cvs.getContext('2d');
+            ctx.drawImage(imgElement, 0, 0, width, height);
+            callback(cvs);
+          }
+          function getDimensions(imgData, callback) {
+            var tmpImg = document.createElement("img");
+            tmpImg.onload = function () {
+              callback(tmpImg.width, tmpImg.height, tmpImg);
+            }
+            tmpImg.src = imgData;
+          }
+        }
+
+        $(function() {
+          var $recordForm = $('#recordForm');
+          $recordForm.on('submit', function (e) {
+            if (!$('#resizeOnClient').is(':checked')) {
+              console.log('Not resizing image on client');
+              return;
+            }
+            var files = $('#input-file')[0].files;
+            if(!files || !files[0]) {
+              return;
+            }
+            resizeImageFromFile(files[0], 2560, 2560, function (dataURL) {
+              $.post($recordForm.attr('action'), {
+                photo: dataURL
+              }).success(function (data) {
+                window.location.href = data;
+              }).error(function (error) {
+                alert(error);
+              });
+            })
+            e.preventDefault();
+          });
+        });
 
   script(type='text/javascript').
     var ESC_KEY = 27;
