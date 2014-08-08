@@ -46,9 +46,11 @@ block content
           div
             button(type="submit").btn.btn-success.pull-right= t('activityresults.submit')
             span#btn-cancel.btn.btn-warning= t('activityresults.cancel')
+            input#resizeOnClient(type='checkbox',name='resizeOnClient',checked='checked')
+            label(for='resizeOnClient')= t('activityresults.resize_on_client')
 
 
-      script.
+  script.
         function getPreview(files, callback) {
           if(!files || !files[0])
             return null;
@@ -139,6 +141,10 @@ block content
         $(function() {
           var $recordForm = $('#recordForm');
           $recordForm.on('submit', function (e) {
+            if (!$('#resizeOnClient').is(':checked')) {
+              console.log('Not resizing image on client');
+              return;
+            }
             var files = $('#input-file')[0].files;
             if(!files || !files[0]) {
               return;

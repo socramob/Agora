@@ -175,7 +175,8 @@
     "done": "Fertig",
     "record_image": "Aufzeichnen",
     "submit": "Weiter",
-    "photoTitlePlaceholder": "Was kann man hier sehen?"
+    "photoTitlePlaceholder": "Was kann man hier sehen?",
+    "resize_on_client": "Bild auf Gerät skalieren"
   },
   "payment": {
     "title": "Zahlung",
